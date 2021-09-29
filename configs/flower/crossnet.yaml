@@ -38,8 +38,8 @@ engine:
   max_epochs: 50
   mnt_metric: val_psnr
   mnt_mode: max
-  log_img_step: 200
-  valid_log_img_step: 10
+  log_img_step: 500
+  valid_log_img_step: 50
   pbar: qqdm
   ckpt_save_mode: latest_1
   enable_tensorboard: False

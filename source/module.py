@@ -66,6 +66,7 @@ class CrossNetModule(BaseModule):
         for met in self.metric_ftns:
             metrics[met.__name__] = met(output, target)
             metrics[met.__name__ + '_ref'] = met(img2_HR, target)
+            metrics[met.__name__ + '_input'] = met(img1_SR, target)
 
         imgs = {'combine': [img1_SR[0], output[0], target[0]]}
 
@@ -112,18 +113,16 @@ class EnhancedCrossNetModule(BaseModule):
             metrics[met.__name__] = met(output, target)
             metrics[met.__name__ + '_warp'] = met(warped_ref, target)
             metrics[met.__name__ + '_ref'] = met(img2_HR, target)
-
+            metrics[met.__name__ + '_input'] = met(img1_SR, target)
+            
         # ------------------------------- visualization ------------------------------ #
 
         flow_color = flow[0].detach().cpu().numpy().transpose(1, 2, 0)
         flow_color = flow_vis.flow_to_color(flow_color, convert_to_bgr=False)
         flow_color = torch.from_numpy(flow_color.transpose(2, 0, 1)).float().to(flow.device) / 255
-        warp_diff = torch.abs(warped_ref[0]-target[0])
-        pred_diff = torch.abs(output[0]-target[0])
 
         imgs = {'combine': [img1_SR[0], output[0], target[0]],
                 'ref': [warped_ref[0], img2_HR[0], flow_color],
-                'diff': [warp_diff, pred_diff],
                 }
 
         return total_loss, self.StepResult(imgs=imgs, metrics=metrics)
