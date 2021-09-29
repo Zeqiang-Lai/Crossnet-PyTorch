@@ -42,9 +42,9 @@ class EnhancedMultiscaleWarpingNet(nn.Module):
         self.encoder = Encoder(3)
         self.decoder = Decoder()
 
-    def forward(self, img1_SR, img2_HR, img1_flow, img2_flow):
-        warp_ref, flow = self.stage1_align(img1_flow, img2_flow)
-        warp_21_conv1, warp_21_conv2, warp_21_conv3, warp_21_conv4 = self.stage2_align(img1_flow, warp_ref, img2_HR)
+    def forward(self, img1_SR, img2_HR):
+        warp_ref, flow = self.stage1_align(img1_SR, img2_HR)
+        warp_21_conv1, warp_21_conv2, warp_21_conv3, warp_21_conv4 = self.stage2_align(img1_SR, warp_ref)
 
         SR_conv1, SR_conv2, SR_conv3, SR_conv4 = self.encoder(img1_SR)
         sythsis_output = self.decoder(SR_conv1, SR_conv2, SR_conv3, SR_conv4, warp_21_conv1, warp_21_conv2, warp_21_conv3, warp_21_conv4)
@@ -57,8 +57,8 @@ class EnhancedMultiscaleWarpingNet(nn.Module):
         warp_ref = self.warp(ref, flow_12_1)
         return warp_ref, flow_12_1
 
-    def stage2_align(self, img1, img2, ref):
-        flow = self.flownet2(img1, img2)
+    def stage2_align(self, x, ref):
+        flow = self.flownet2(x, ref)
         flow_12_1 = flow['flow_12_1']
         flow_12_2 = flow['flow_12_2']
         flow_12_3 = flow['flow_12_3']

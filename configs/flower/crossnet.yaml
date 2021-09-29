@@ -1,6 +1,6 @@
 train:
   dataset:
-    type@: FlowerDataset2
+    type@: FlowerDataset
     img1_dir: /home/wzliu/lzq/data/flower/1_1
     img2_dir: /home/wzliu/lzq/data/flower/0_0
     sf: 4
@@ -39,6 +39,7 @@ engine:
   mnt_metric: val_psnr
   mnt_mode: max
   log_img_step: 200
+  valid_log_img_step: 10
   pbar: qqdm
   ckpt_save_mode: latest_1
   enable_tensorboard: False

@@ -1,6 +1,6 @@
 train:
   dataset:
-    type@: FlowerDataset2
+    type@: FlowerDataset
     img1_dir: /home/wzliu/lzq/data/flower/1_1
     img2_dir: /home/wzliu/lzq/data/flower/0_0
     sf: 4
@@ -10,12 +10,12 @@ train:
     landmark: /home/wzliu/lzq/data/flower/landmark/0_0_1_1
     landmark_reverse: True
   loader:
-    batch_size: 1
+    batch_size: 2
     shuffle: True
   
 test:
   dataset:
-    type@: FlowerDataset2
+    type@: FlowerDataset
     img1_dir: /home/wzliu/lzq/data/flower/1_1
     img2_dir: /home/wzliu/lzq/data/flower/0_0
     sf: 4
@@ -36,7 +36,6 @@ module:
     weight_decay: 0.00005
   input_mode:
     input: SR_bicubic
-    flow: ['SR_bicubic', 'HR']
   loss_config:
     weight:
       reconstruct: 1
@@ -46,6 +45,7 @@ engine:
   mnt_metric: val_psnr
   mnt_mode: max
   log_img_step: 200
+  valid_log_img_step: 10
   pbar: qqdm
   ckpt_save_mode: latest_1
   enable_tensorboard: False

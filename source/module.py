@@ -89,14 +89,12 @@ class EnhancedCrossNetModule(BaseModule):
 
         img1_SR = data['img1_'+self.input_mode['input']]
         img2_HR = data['img2_HR']
-        img1_flow = data['img1_'+self.input_mode['flow'][0]]
-        img2_flow = data['img2_'+self.input_mode['flow'][1]]
         target = data['img1_HR']
         landmark = data['landmark']
 
         # ---------------------------------- forward --------------------------------- #
 
-        output, warped, flow = self.model(img1_SR, img2_HR, img1_flow, img2_flow)
+        output, warped, flow = self.model(img1_SR, img2_HR)
         warped_ref, _ = warped
 
        # ------------------------------- compute loss ------------------------------- #
