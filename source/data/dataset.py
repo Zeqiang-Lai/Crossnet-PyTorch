@@ -12,6 +12,7 @@ def imread(x): return np.asarray(imageio.imread(x))
 
 # TODO: train with multiple source
 
+
 class FlowerDataset(data.dataset.Dataset):
     def __init__(self, img1_dir, img2_dir,
                  sf, img1_keys, img2_keys,
@@ -65,8 +66,8 @@ class FlowerDataset(data.dataset.Dataset):
             landmarks = np.array(landmarks)
             if self.landmark_reverse:
                 rlandmarks = np.ones_like(landmarks)
-                rlandmarks[:,:2] = landmarks[:,2:]
-                rlandmarks[:,2:] = landmarks[:,:2]
+                rlandmarks[:, :2] = landmarks[:, 2:]
+                rlandmarks[:, 2:] = landmarks[:, :2]
                 landmarks = rlandmarks
             data['landmark'] = landmarks
 

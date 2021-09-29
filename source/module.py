@@ -5,12 +5,11 @@ import torch
 import flow_vis
 
 import torchlight
-from torchlight.nn.loss import charbonnier_loss
 from torchlight.utils.helper import get_obj, to_device, ConfigurableLossCalculator
 from torchlight.utils.metrics import psnr
 
 from .model import EnhancedMultiscaleWarpingNet, MultiscaleWarpingNet
-from .loss import landmark_loss
+from .loss import landmark_loss, warping_loss, charbonnier_loss
 
 
 class BaseModule(torchlight.Module):
@@ -79,9 +78,12 @@ class EnhancedCrossNetModule(BaseModule):
         self.input_mode = input_mode
 
         self.loss_config = loss_config
+        self.reduce = loss_config['reduce']
         self.loss_calculator = ConfigurableLossCalculator(loss_config['weight'])
-
-        self.reconstruct_loss = partial(charbonnier_loss, reduce=loss_config['reduce'])
+        
+        # grid_sampler_2d_backward_cuda does not have a deterministic implementation
+        if 'landmark' in loss_config['weight']:
+            torch.use_deterministic_algorithms(False)
 
     def _step(self, data, train, epoch, step):
         data = to_device(data, self.device)
@@ -100,9 +102,9 @@ class EnhancedCrossNetModule(BaseModule):
 
        # ------------------------------- compute loss ------------------------------- #
 
-        self.loss_calculator.register(lambda: self.reconstruct_loss(output, target), 'reconstruct')
-        self.loss_calculator.register(lambda: landmark_loss(landmark, flow), 'landmark')
-        self.loss_calculator.register(lambda: F.mse_loss(warped_ref, target), 'warp')
+        self.loss_calculator.register(lambda: charbonnier_loss(output, target, reduce=self.reduce), 'reconstruct')
+        self.loss_calculator.register(lambda: landmark_loss(landmark, flow, reduce=self.reduce), 'landmark')
+        self.loss_calculator.register(lambda: warping_loss(warped_ref, target, reduce=self.reduce), 'warp')
 
         total_loss, metrics = self.loss_calculator.compute()
         metrics['total'] = total_loss.item()

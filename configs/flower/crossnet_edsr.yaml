@@ -7,8 +7,6 @@ train:
     img1_keys: ['SR_EDSR_baseline']
     img2_keys: []
     names_path: /home/wzliu/lzq/data/flower/train.txt
-    landmark: /home/wzliu/lzq/data/flower/landmark/0_0_1_1
-    landmark_reverse: True
   loader:
     batch_size: 2
     shuffle: True
@@ -22,24 +20,20 @@ test:
     img1_keys: ['SR_EDSR_baseline']
     img2_keys: []
     names_path: /home/wzliu/lzq/data/flower/test.txt
-    landmark: /home/wzliu/lzq/data/flower/landmark/0_0_1_1
-    landmark_reverse: True
   loader:
     batch_size: 1
     shuffle: False
   
 module:
-  type@: EnhancedCrossNetModule
+  type@: CrossNetModule
   optimizer:
     type@: Adam
     lr: 0.0001
     weight_decay: 0.00005
   input_mode:
     input: SR_EDSR_baseline
-  loss_config:
-    weight:
-      reconstruct: 1
-    reduce: batch
+    flow: ['SR_EDSR_baseline', 'HR']
+
 engine:
   max_epochs: 50
   mnt_metric: val_psnr

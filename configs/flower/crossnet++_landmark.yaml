@@ -39,6 +39,7 @@ module:
   loss_config:
     weight:
       reconstruct: 1
+      landmark: 1
     reduce: batch
 engine:
   max_epochs: 50
