@@ -10,8 +10,9 @@ from .augment import augment, augment_config, augment_landmark
 
 def imread(x): return np.asarray(imageio.imread(x))
 
+# TODO: train with multiple source
 
-class FlowerDataset2(data.dataset.Dataset):
+class FlowerDataset(data.dataset.Dataset):
     def __init__(self, img1_dir, img2_dir,
                  sf, img1_keys, img2_keys,
                  landmark=None, landmark_reverse=False,
@@ -73,47 +74,3 @@ class FlowerDataset2(data.dataset.Dataset):
 
     def __len__(self):
         return len(self.names)
-
-
-class FlowerDataset(data.dataset.Dataset):
-    def __init__(self, path, mode, return_name=False, augment=True):
-        names = os.listdir(os.path.join(path, 'img1_HR'))
-        self.img1_HR_paths = [os.path.join(path, 'img1_HR', name) for name in names]
-        self.img1_LR_paths = [os.path.join(path, 'img1_LR', name) for name in names]
-        self.img1_SR_paths = [os.path.join(path, 'img1_SR', name) for name in names]
-        self.img2_HR_paths = [os.path.join(path, 'img2_HR', name) for name in names]
-        self.img2_LR_paths = [os.path.join(path, 'img2_LR', name) for name in names]
-        self.matches_paths = [os.path.join(path, 'img1_img2_matches', name[:-4]+'.pkl') for name in names]
-        self.return_name = return_name
-        self.augment = augment
-
-    def __getitem__(self, index):
-        img1_HR = imread(self.img1_HR_paths[index]).transpose(2, 0, 1).astype('float32') / 255
-        img1_LR = imread(self.img1_LR_paths[index]).transpose(2, 0, 1).astype('float32') / 255
-        img1_SR = imread(self.img1_SR_paths[index]).transpose(2, 0, 1).astype('float32') / 255
-        img2_HR = imread(self.img2_HR_paths[index]).transpose(2, 0, 1).astype('float32') / 255
-        img2_LR = imread(self.img2_LR_paths[index]).transpose(2, 0, 1).astype('float32') / 255
-
-        with open(self.matches_paths[index], "rb") as fp:
-            matches = pickle.load(fp)
-
-        if self.augment:
-            config = augment_config()
-            img1_HR = augment(img1_HR, config)
-            img1_LR = augment(img1_LR, config)
-            img1_SR = augment(img1_SR, config)
-            img2_HR = augment(img2_HR, config)
-            img2_LR = augment(img2_LR, config)
-            matches = augment_landmark(img1_HR, matches, config)
-        matches = np.array(matches)
-
-        if self.return_name:
-            name = os.path.basename(self.img1_HR_paths[index])
-            return (img1_LR, img1_HR, img1_SR, img2_HR, img2_LR), matches, name
-        else:
-            return (img1_LR, img1_HR, img1_SR, img2_HR, img2_LR), matches
-
-    def __len__(self):
-        return len(self.img1_HR_paths)
-
-    
