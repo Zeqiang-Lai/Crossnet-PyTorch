@@ -15,7 +15,7 @@ python main.py --model EDSR --scale 4 --save flower/edsr_x4 --n_resblocks 32 --n
 
 - Flower Dataset
 
-| Model | Scale | PSNR |
-| ----- | ----- | ---- |
-| EDSR_Baseline | 4 | 36.816 |
-| EDSR | 4 | |
+| Model         | Scale | PSNR   |
+| ------------- | ----- | ------ |
+| EDSR_Baseline | 4     | 36.816 |
+| EDSR          | 4     | 37.726 |
