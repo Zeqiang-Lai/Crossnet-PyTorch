@@ -21,7 +21,7 @@ bicubic_upsample = Upsample(sf, mode='cubic')
 
 def process(root):
     lr_dir = root / f'sf_{sf}' / 'LR'
-    bi_dir = root / f'sf_{sf}' / 'LR_bicubic'
+    bi_dir = root / f'sf_{sf}' / 'SR_bicubic'
 
     lr_dir.mkdir(exist_ok=True, parents=True)
     bi_dir.mkdir(exist_ok=True, parents=True)

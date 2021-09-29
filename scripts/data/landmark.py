@@ -1,5 +1,4 @@
 import cv2
-import numpy as np
 import os
 import pickle
 
@@ -61,9 +60,16 @@ def sift_knn_bbs(img1, img2):
     return match_points
 
 if __name__ == '__main__':
-    img1_dir = '/media/exthdd/datasets/refsr/LF_Flowers_Dataset/refsr_rgb/img1_HR'
-    img2_dir = '/media/exthdd/datasets/refsr/LF_Flowers_Dataset/refsr_rgb/img2_HR'
-    target_dir = '/media/exthdd/datasets/refsr/LF_Flowers_Dataset/refsr_rgb/img1_img2_matches'
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-img1', required=True, type=str, help='img1 data root')
+    parser.add_argument('-img2', required=True, type=str, help='img2 data root')
+    parser.add_argument('-o','--output', required=True, type=str, help='output root')
+    args = parser.parse_args()
+    
+    img1_dir = args.img1
+    img2_dir = args.img2
+    target_dir = args.output
     
     names = os.listdir(img1_dir)
     os.makedirs(target_dir, exist_ok=True)
