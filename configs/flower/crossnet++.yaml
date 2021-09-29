@@ -1,0 +1,51 @@
+train:
+  dataset:
+    type@: FlowerDataset2
+    img1_dir: /home/wzliu/lzq/data/flower/1_1
+    img2_dir: /home/wzliu/lzq/data/flower/0_0
+    sf: 4
+    img1_keys: ['SR_bicubic']
+    img2_keys: ['SR_bicubic']
+    names_path: /home/wzliu/lzq/data/flower/train.txt
+    landmark: /home/wzliu/lzq/data/flower/landmark/0_0_1_1
+    landmark_reverse: True
+  loader:
+    batch_size: 1
+    shuffle: True
+  
+test:
+  dataset:
+    type@: FlowerDataset2
+    img1_dir: /home/wzliu/lzq/data/flower/1_1
+    img2_dir: /home/wzliu/lzq/data/flower/0_0
+    sf: 4
+    img1_keys: ['SR_bicubic']
+    img2_keys: ['SR_bicubic']
+    names_path: /home/wzliu/lzq/data/flower/test.txt
+    landmark: /home/wzliu/lzq/data/flower/landmark/0_0_1_1
+    landmark_reverse: True
+  loader:
+    batch_size: 1
+    shuffle: False
+  
+module:
+  type@: EnhancedCrossNetModule
+  optimizer:
+    type@: AdamW
+    lr: 0.0001
+    weight_decay: 0.00005
+  input_mode:
+    input: SR_bicubic
+    flow: ['SR_bicubic', 'HR']
+  loss_config:
+    weight:
+      reconstruct: 1
+    reduce: mean
+engine:
+  max_epochs: 50
+  mnt_metric: val_psnr
+  mnt_mode: max
+  log_img_step: 200
+  pbar: qqdm
+  ckpt_save_mode: latest_1
+  enable_tensorboard: False

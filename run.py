@@ -1,15 +1,21 @@
 from torchlight import config
 from torchlight.entry import run
 from torchlight.utils.helper import get_obj
+from torchlight.utils.reproducibility import SeedDataLoader, setup_randomness
 
 import source.module as module
-from source.data.dataloader import RGBRefSRDataLoader
+import source.data.dataset as dataset
+from source.data.collate import default_collate
 
 if __name__ == '__main__':
     args, cfg = config.basic_args()
-  
-    train_loader = RGBRefSRDataLoader(**cfg.loader.train)
-    test_loader = RGBRefSRDataLoader(augment=False, **cfg.loader.test)
+    setup_randomness(2021)
+    
+    train_dataset = get_obj(cfg.train.dataset, dataset)
+    test_dataset = get_obj(cfg.test.dataset, dataset)
+    
+    train_loader = SeedDataLoader(train_dataset, collate_fn=default_collate, **cfg.train.loader)
+    test_loader = SeedDataLoader(test_dataset, collate_fn=default_collate, **cfg.test.loader)
     
     module = get_obj(cfg.module, module)
 

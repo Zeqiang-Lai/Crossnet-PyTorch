@@ -1,14 +1,3 @@
-from typing import List
-from torchlight.utils.data import BaseDataLoader
-import torch
-
-from .dataset import FlowerDataset
-
-class RGBRefSRDataLoader(BaseDataLoader):
-    def __init__(self, data_dir, batch_size, augment=True, return_name=False, shuffle=True, validation_split=0, num_workers=4):
-        dataset = FlowerDataset(data_dir, return_name=return_name, augment=augment)
-        super().__init__(dataset, batch_size, shuffle, validation_split, num_workers, collate_fn=default_collate)
-    
 import torch
 import re
 from torch._six import container_abcs, string_classes, int_classes
